@@ -23,11 +23,11 @@ public class MainFrame extends JFrame {
 		
 		// First we go to the menu page
 		Page menu = new MainMenu(frame);
-		Page nextPage = menu.startLoop();
+		Page nextPage = menu.executePage();
 		
 		// Then we keep going to whatever page comes next until we get a null
 		while(nextPage != null) {
-			nextPage = nextPage.startLoop();
+			nextPage = nextPage.executePage();
 		}
 		
 		System.out.println("All done, no more pages left to show.");

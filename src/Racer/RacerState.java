@@ -1,3 +1,4 @@
+package Racer;
 
 public enum RacerState {
 	SLOW,
