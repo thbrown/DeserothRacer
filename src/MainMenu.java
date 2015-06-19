@@ -1,3 +1,4 @@
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -5,10 +6,11 @@ import java.util.List;
 
 public class MainMenu implements Page {
 	
-	MainFrame displayer = new MainFrame();
+	MainFrame mainframe;
+	List<Drawable> toDraw;
 
-	public MainMenu(MainFrame displayer) {
-		this.displayer = new MainFrame();
+	public MainMenu(MainFrame mainframe) {
+		this.mainframe = mainframe;
 	}
 	
 	public Page executePage() {
@@ -18,12 +20,13 @@ public class MainMenu implements Page {
 	}
 	
 	private void init() {
-		// Nothing yet
+		toDraw = new ArrayList<>();
+		toDraw.add(new Text("Deseroth Racer", 100, 100));
 	}
 	
 	private Page loop() {
 		while(true) {
-			displayer.draw(getListOfThingsToDraw());
+			mainframe.draw(getListOfThingsToDraw());
 				
 			try {
 				Thread.sleep(100);
@@ -34,19 +37,13 @@ public class MainMenu implements Page {
 	}
 	
 	private List<Drawable> getListOfThingsToDraw() {
-		
-		List<Drawable> list = new ArrayList<>();
-		list.add(new Text("Hello!!", 100, 100));
-		list.add(new Text("This", 600, 300));
-		list.add(new Text("is a ", 200, 600));
-		list.add(new Text("Text graphic demo", 300, 700));
-		return list;
-		
+		return toDraw;
 	}
 	
 	class Text implements Drawable {
 		
 		String content;
+		Font font = new Font(Font.MONOSPACED, Font.ITALIC, 100);
 		int x;
 		int y;
 		
@@ -58,7 +55,10 @@ public class MainMenu implements Page {
 
 		@Override
 		public void draw(Graphics g) {
+			Font old = g.getFont();
+			g.setFont(font);
 			g.drawString(content, x, y);
+			g.setFont(old);
 		}
 		
 	}

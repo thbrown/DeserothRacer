@@ -18,21 +18,19 @@ public class MainFrame extends JFrame {
 	ExtraMagicalJPanel graphicsPanel;
 
 	public static void main(String [] args) {
-		// Make the thing that does the displaying
+		// First make the frame
 		MainFrame frame = new MainFrame();
 		
-		// First we go to the menu page
+		// Go to the menu page
 		Page menu = new MainMenu(frame);
-		Page nextPage = menu.startLoop();
+		Page nextPage = menu.executePage();
 		
 		// Then we keep going to whatever page comes next until we get a null
 		while(nextPage != null) {
-			nextPage = nextPage.startLoop();
+			nextPage = nextPage.executePage();
 		}
 		
 		System.out.println("All done, no more pages left to show.");
-
-		
 	}
 
 	MainFrame() {
