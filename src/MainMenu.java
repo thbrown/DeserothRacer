@@ -5,13 +5,13 @@ import java.util.List;
 
 public class MainMenu implements Page {
 	
-	PageDisplayer displayer = new PageDisplayer();
+	MainFrame displayer = new MainFrame();
 
-	public MainMenu(PageDisplayer displayer) {
-		this.displayer = new PageDisplayer();
+	public MainMenu(MainFrame displayer) {
+		this.displayer = new MainFrame();
 	}
 	
-	public Page startLoop() {
+	public Page executePage() {
 		init();
 		Page nextPage = loop();
 		return nextPage;

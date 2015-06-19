@@ -1,6 +1,9 @@
 
 public interface Page {
 	
-	public Page startLoop();
+	/**
+	 * @return the next page that should be executed
+	 */
+	public Page executePage();
 
 }

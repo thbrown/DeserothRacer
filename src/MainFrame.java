@@ -10,7 +10,7 @@ import javax.swing.JPanel;
  * Use this class to draw a list of drawables on the main JPanel
  */
 @SuppressWarnings("serial")
-public class PageDisplayer extends JFrame {
+public class MainFrame extends JFrame {
 
 	final int height = 800;
 	final int width = 1500;
@@ -19,10 +19,10 @@ public class PageDisplayer extends JFrame {
 
 	public static void main(String [] args) {
 		// Make the thing that does the displaying
-		PageDisplayer displayer = new PageDisplayer();
+		MainFrame frame = new MainFrame();
 		
 		// First we go to the menu page
-		Page menu = new MainMenu(displayer);
+		Page menu = new MainMenu(frame);
 		Page nextPage = menu.startLoop();
 		
 		// Then we keep going to whatever page comes next until we get a null
@@ -35,7 +35,7 @@ public class PageDisplayer extends JFrame {
 		
 	}
 
-	PageDisplayer() {
+	MainFrame() {
 		super("Deseroth Racer");
 		this.setSize(new Dimension(width,height));
 		this.setVisible(true);
