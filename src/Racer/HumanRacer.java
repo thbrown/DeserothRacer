@@ -106,8 +106,4 @@ public class HumanRacer extends Racer {
 		this.slightLeftPressed = slightLeftPressed;
 	}
 
-	@Override
-	public void update() {
-		// Just sticking this here for now, will probs move this out of the drawable interface
-	}
 }

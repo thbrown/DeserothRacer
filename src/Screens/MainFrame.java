@@ -91,4 +91,19 @@ public class MainFrame extends Canvas {
     	g.dispose();
     	strategy.show();
     }
+    
+    public void drawEntities(List<Entity> toDraw) {
+    	Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
+    	
+    	// Clear the screen
+		g.setColor(Color.black);
+		g.fillRect(0,0,width,height);
+		
+		for(Entity a : toDraw) {
+			a.draw(g);
+		}
+		
+    	g.dispose();
+    	strategy.show();
+    }
 }

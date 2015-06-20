@@ -35,7 +35,7 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 	private boolean click = false;
 
 	MainFrame mainframe;
-	List<Drawable> menuElements;
+	List<Entity> menuElements;
 	
 	// We'll load the pictures once here, so we don't have to re-load them each time we create an object
 	static {
@@ -81,7 +81,7 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 			toRemove.clear();
 			menuElements.addAll(toAdd);
 			toAdd.clear();
-			mainframe.draw(menuElements);
+			mainframe.drawEntities(menuElements);
 			updateAll(menuElements);
 
 			long timeToSleep = 10000000 - (System.nanoTime() - time);
@@ -98,27 +98,29 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 		}
 	}
 
-	private void updateAll(List<Drawable> elements) {
-		for(Drawable d : elements) {
+	private void updateAll(List<Entity> elements) {
+		for(Entity d : elements) {
 			d.update();
 		}
 	}
 
-	List<Drawable> toRemove = new LinkedList<>();
-	private void markForRemoval(Drawable d) {
+	List<Entity> toRemove = new LinkedList<>();
+	private void markForRemoval(Entity d) {
 		toRemove.add(d);
 	}
 
-	List<Drawable> toAdd = new LinkedList<>();
-	private void markForAdd(Drawable d) {
-		toAdd.add(d);
+	List<Entity> toAdd = new LinkedList<>();
+	private void markForAdd(Entity pod) {
+		toAdd.add(pod);
 	}
 
-	class MenuElement implements Drawable {
+	class MenuElement implements Entity {
 
 		String content;
 		int x;
 		int y;
+		private final int WIDTH = 200;
+		private final int HEIGHT = 75;
 		Font font;
 
 		MenuElement(String content, int x, int y, int fontSize, boolean clickable) {
@@ -140,9 +142,19 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 			// These don't move
 		}
 
+		@Override
+		public int getHeight() {
+			return HEIGHT;
+		}
+
+		@Override
+		public int getWidth() {
+			return WIDTH;
+		}
+
 	}
 
-	class Car implements Drawable {
+	class Car implements Entity {
 
 		String content;
 		int x;
@@ -167,19 +179,29 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 		public void update() {
 			// kick up some dust (Back wheel)
 			for(int i = 0; i < 5; i++) {
-				Drawable pod = new PieceOfDust(x + img.getWidth() - 150, y + img.getHeight() - 25);
+				Entity pod = new PieceOfDust(x + img.getWidth() - 150, y + img.getHeight() - 25);
 				markForAdd(pod);
 			}
 			// Front wheel
 			for(int i = 0; i < 5; i++) {
-				Drawable pod = new PieceOfDust(x + img.getWidth() - 600, y + img.getHeight() - 25);
+				Entity pod = new PieceOfDust(x + img.getWidth() - 600, y + img.getHeight() - 25);
 				markForAdd(pod);
 			}
 		}
 
+		@Override
+		public int getHeight() {
+			return img.getHeight();
+		}
+
+		@Override
+		public int getWidth() {
+			return img.getWidth();
+		}
+
 	}
 
-	class ScrollingImage implements Drawable {
+	class ScrollingImage implements Entity {
 
 		String content;
 		int x = 0;
@@ -214,9 +236,21 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 			}
 		}
 
+		@Override
+		public int getHeight() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int getWidth() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
 	}
 	
-	class PieceOfDust implements Drawable {
+	class PieceOfDust implements Entity {
 		
 		int x;
 		int y;
@@ -254,19 +288,33 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 				markForRemoval(this);
 			}
 		}
+
+		@Override
+		public int getHeight() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int getWidth() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 		
 	}
 	
 	// This is just a dot used to detect a mouse collision with a menu element
-	class MousePointer implements Drawable {
+	class MousePointer implements Entity {
 		
 		int x;
 		int y;
+		
+		private final int SIZE = 2;
 
 		@Override
 		public void draw(Graphics g) {
 			g.setColor(Color.RED);
-			g.fillOval(x, y, 2,2);
+			g.fillOval(x, y, SIZE,SIZE);
 		}
 
 		@Override
@@ -275,6 +323,16 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 			y = mouseY;	
 			System.out.println(x + " " + y);
 			click = false;
+		}
+
+		@Override
+		public int getHeight() {
+			return SIZE;
+		}
+
+		@Override
+		public int getWidth() {
+			return SIZE;
 		}
 	}
 
