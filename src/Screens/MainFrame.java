@@ -1,6 +1,7 @@
-package Menus;
+package Screens;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +23,18 @@ public class MainFrame extends JFrame {
 		// Make the thing that does the displaying
 		MainFrame frame = new MainFrame();
 		
+		Page derek = new Derek();
+		//frame.addKeyListener((KeyListener)derek);
+		
 		// First we go to the menu page
-		Page menu = new MainMenu(frame);
-		Page nextPage = menu.executePage();
+		//Page menu = new MainMenu(frame);
+		//Page nextPage = menu.executePage();
+		KeyListener race = new Race(frame);
+		frame.setFocusable(true);
+		//KeyListener kl = (KeyListener) race;
+		frame.addKeyListener(race);
+		Page nextPage = ((Page) race).executePage();
+		
 		
 		// Then we keep going to whatever page comes next until we get a null
 		while(nextPage != null) {
@@ -33,7 +43,8 @@ public class MainFrame extends JFrame {
 		
 		System.out.println("All done, no more pages left to show.");
 
-		
+
+		while(true) {}
 	}
 
 	MainFrame() {

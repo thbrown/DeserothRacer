@@ -1,4 +1,4 @@
-package Menus;
+package Screens;
 
 public interface Page {
 	

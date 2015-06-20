@@ -1,4 +1,4 @@
-package Menus;
+package Screens;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;

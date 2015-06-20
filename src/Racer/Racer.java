@@ -1,16 +1,25 @@
 package Racer;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
+
+import javafx.scene.transform.Rotate;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.swing.ImageIcon;
+
+import Screens.Drawable;
 
 
-public abstract class Racer {
+public abstract class Racer implements Drawable{
 	
 	private float xPosition, yPosition;
 	private float xVelocity, yVelocity;
@@ -21,40 +30,43 @@ public abstract class Racer {
 	
 	static final float MAX_ACCELERATION = 4.0f;
 	static final float MAX_DECELERATION = -4.0f;
+	static final float MAX_VELOCITY = 20.0f;
 	
 	public void loadRacerImage( String racerImageLocation ) {
-		File f = new File(racerImageLocation);
+	    Image  img = new ImageIcon(racerImageLocation).getImage();
 
-	    //Find a suitable ImageReader
-	    Iterator readers = ImageIO.getImageReadersByFormatName("JPEG");
-	    ImageReader reader = null;
-	    while(readers.hasNext()) {
-	        reader = (ImageReader)readers.next();
-	        if(reader.canReadRaster()) {
-	            break;
-	        }
-	    }
-
-	    //Stream the image file (the original CMYK image)
-	    ImageInputStream input;
-		try {
-			input = ImageIO.createImageInputStream(f);
-			reader.setInput(input); 
-
-	    	//Read the image raster
-	    	Raster raster = reader.readRaster(0, null); 
-
-	    	//Create a new RGB image
-	    	BufferedImage racerImage = new BufferedImage(raster.getWidth(), raster.getHeight(), 
-	    										 BufferedImage.TYPE_4BYTE_ABGR); 
+	    racerImage = new BufferedImage(img.getWidth(null), img.getHeight(null),
+	        BufferedImage.TYPE_INT_RGB);
 	    
-	    	//Fill the new image with the old raster
-	    	racerImage.getRaster().setRect(raster);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-	    
+	}
+	
+	public void CalculateVelocity() {
+		this.xVelocity += this.xAcceleration;
+		if(this.xVelocity > this.MAX_VELOCITY) {
+			this.xVelocity = this.MAX_VELOCITY;
+		}
+		else if (this.xVelocity < (-1)*this.MAX_VELOCITY) {
+			this.xVelocity = (-1)*this.MAX_VELOCITY;
+		}
+		this.yVelocity += this.yAcceleration;
+		if(this.yVelocity > this.MAX_VELOCITY) {
+			this.yVelocity = this.MAX_VELOCITY;
+		}
+		else if (this.yVelocity < (-1)*this.MAX_VELOCITY) {
+			this.yVelocity = (-1)*this.MAX_VELOCITY;
+		}
+
+		//direction = (float) Math.atan2(yVelocity, xVelocity);
+		//System.out.println(this.xVelocity);
+		//System.out.println(this.yVelocity);
+	}
+	
+	public void CalculatePosition() {
+		this.xPosition += this.xVelocity;
+		this.yPosition += this.yVelocity;
+
+		//System.out.println(this.xPosition);
+		//System.out.println(this.yPosition);
 	}
 	
 	public abstract void setupAccelerationVectors( );
@@ -143,6 +155,12 @@ public abstract class Racer {
 
 	public void setRacerImage(BufferedImage racerImage) {
 		this.racerImage = racerImage;
+	}
+	
+	public void draw(Graphics g) {
+		Graphics2D g2 = racerImage.createGraphics();
+		g2.rotate(this.getDirection(),racerImage.getWidth()/2, racerImage.getHeight()/2);
+		g.drawImage(racerImage, (int)this.xPosition, (int)this.yPosition, null);
 	}
 
 }
