@@ -1,3 +1,5 @@
+package Screens;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -11,33 +13,33 @@ import javax.imageio.ImageIO;
 
 
 public class MainMenu implements Page {
-	
+
 	private static final int TITLE_TEXT_SIZE = 100;
 	private static final int TITLE_TEXT_X_OFFSET = 50;
 	private static final int TITLE_TEXT_Y_OFFSET = 100;
-	
+
 	private static final int MENU_TEXT_SIZE = 50;
 	private static final int MENU_TEXT_SPACING = 50;
 	private static final int MENU_TEXT_X_OFFSET = 50;
 	private static final int MENU_TEXT_Y_OFFSET = 150;
-	
-	private static final String CAR_IMAGE = "src/img/car.png";
-	private static final String BACKGROUND_MOUNTAIN_IMAGE = "src/img/mainMenuBackgroundMountains.png";
-	private static final String BACKGROUND_TREE_IMAGE = "src/img/mainMenuBackgroundTrees.png";
-	
+
+	private static final String CAR_IMAGE = "src/Images/car.png";
+	private static final String BACKGROUND_MOUNTAIN_IMAGE = "src/Images/mainMenuBackgroundMountains.png";
+	private static final String BACKGROUND_TREE_IMAGE = "src/Images/mainMenuBackgroundTrees.png";
+
 	MainFrame mainframe;
 	List<Drawable> menuElements;
 
 	public MainMenu(MainFrame mainframe) {
 		this.mainframe = mainframe;
 	}
-	
+
 	public Page executePage() {
 		init();
 		Page nextPage = loop();
 		return nextPage;
 	}
-	
+
 	private void init() {
 		menuElements = new LinkedList<>();
 		menuElements.add(new ScrollingImage(BACKGROUND_MOUNTAIN_IMAGE, -10));
@@ -49,7 +51,7 @@ public class MainMenu implements Page {
 		menuElements.add(new MenuElement("Credits", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*3, MENU_TEXT_SIZE, false));
 		menuElements.add(new MenuElement("Quit", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*4, MENU_TEXT_SIZE, false));
 	}
-	
+
 	private Page loop() {
 		while(true) {
 			long time = System.nanoTime();
@@ -59,42 +61,41 @@ public class MainMenu implements Page {
 			toAdd.clear();
 			mainframe.draw(menuElements);
 			updateAll(menuElements);
-			
+
 			long timeToSleep = 10000000 - (System.nanoTime() - time);
 			if(timeToSleep > 0) {
 				try {
-					System.out.println(timeToSleep/1000000);
 					Thread.sleep(timeToSleep/1000000);
 				} catch (InterruptedException e) {
-					System.out.println("System is overoaded");
+					// Meh
 				}
 			}
 		}
 	}
-	
+
 	private void updateAll(List<Drawable> elements) {
 		for(Drawable d : elements) {
 			d.update();
 		}
 	}
-	
+
 	List<Drawable> toRemove = new LinkedList<>();
 	private void markForRemoval(Drawable d) {
 		toRemove.add(d);
 	}
-	
+
 	List<Drawable> toAdd = new LinkedList<>();
 	private void markForAdd(Drawable d) {
 		toAdd.add(d);
 	}
 
 	class MenuElement implements Drawable {
-		
+
 		String content;
 		int x;
 		int y;
 		Font font;
-		
+
 		MenuElement(String content, int x, int y, int fontSize, boolean clickable) {
 			this.content = content;
 			this.x = x;
@@ -113,19 +114,19 @@ public class MainMenu implements Page {
 		public void update() {
 			// These don't move
 		}
-		
+
 	}
-	
+
 	class StationaryImage implements Drawable {
-		
+
 		String content;
 		int x;
 		int y;
 		int height;
 		int width;
-		
+
 		BufferedImage img;
-		
+
 		StationaryImage(String fileName, int x, int y, int height, int width) {
 			File f = new File(fileName);
 			try {
@@ -146,18 +147,18 @@ public class MainMenu implements Page {
 		public void update() {
 			// These don't move either
 		}
-		
+
 	}
-	
+
 	class ScrollingImage implements Drawable {
-		
+
 		String content;
 		int x = 0;
 		int y = 0;
 		int speed;
-		
+
 		BufferedImage img;
-		
+
 		ScrollingImage(String fileName, int speed) {
 			File f = new File(fileName);
 			try {
@@ -168,7 +169,7 @@ public class MainMenu implements Page {
 			this.x = - img.getWidth();
 			this.speed = speed;
 		}
-		
+
 		ScrollingImage(BufferedImage img, int speed) {
 			this.img = img;
 			this.x = - img.getWidth();
@@ -183,12 +184,12 @@ public class MainMenu implements Page {
 		@Override
 		public void update() {
 			x -= speed;
-			
+
 			// We need to replace the scrolling image with another image
 			if(x == 0) {
 				markForAdd(new ScrollingImage(img, speed));
 			}
-				
+
 			// If the image is way off the page, then get rid of it
 			if(x > MainFrame.width) {
 				markForRemoval(this);

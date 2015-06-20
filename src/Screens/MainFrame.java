@@ -1,16 +1,20 @@
+
+package Screens;
+
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import Racer.Racer;
+
 
 /**
  * Use this class to draw things on the main window's canvas
@@ -19,12 +23,23 @@ import javax.swing.JPanel;
 public class MainFrame extends Canvas {
 	
 	public static void main(String [] args) {
-		// First make the frame
+		// Make the thing that does the displaying
 		MainFrame frame = new MainFrame();
 		
-		// Go to the menu page
+		//frame.addKeyListener((KeyListener)derek);
+		
+		// First we go to the main menu page
 		Page menu = new MainMenu(frame);
 		Page nextPage = menu.executePage();
+		
+		//Page race = new Race(frame);
+		//Page nextPage = race.executePage();
+		
+		frame.setFocusable(true);
+		//KeyListener kl = (KeyListener) race;
+		//frame.addKeyListener(race);
+		//Page nextPage = ((Page) race).executePage();
+		
 		
 		// Then we keep going to whatever page comes next until we get a null
 		while(nextPage != null) {
@@ -32,6 +47,7 @@ public class MainFrame extends Canvas {
 		}
 		
 		System.out.println("All done, no more pages left to show.");
+
 	}
 
 	public static int height = 800;

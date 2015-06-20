@@ -1,3 +1,4 @@
+package Screens;
 
 public interface Page {
 	
