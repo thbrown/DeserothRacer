@@ -5,16 +5,15 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import Racer.Racer;
-
+import com.sun.glass.events.MouseEvent;
 
 /**
  * Use this class to draw things on the main window's canvas
@@ -26,10 +25,10 @@ public class MainFrame extends Canvas {
 		// Make the thing that does the displaying
 		MainFrame frame = new MainFrame();
 		
-		//frame.addKeyListener((KeyListener)derek);
-		
 		// First we go to the main menu page
 		Page menu = new MainMenu(frame);
+		frame.addMouseListener((MouseListener) menu);
+		frame.addMouseMotionListener((MouseMotionListener) menu);
 		Page nextPage = menu.executePage();
 		
 		//Page race = new Race(frame);
@@ -55,8 +54,10 @@ public class MainFrame extends Canvas {
 	
 	BufferStrategy strategy;
 
+	JFrame window;
+	
 	MainFrame() {
-		JFrame window = new JFrame("Deseroth Racer");
+		window = new JFrame("Deseroth Racer");
 		
 		JPanel panel = (JPanel) window.getContentPane();
 		panel.setPreferredSize(new Dimension(width,height));
@@ -75,8 +76,6 @@ public class MainFrame extends Canvas {
 		createBufferStrategy(2);
 		strategy = getBufferStrategy();
 	}
-	
-	List<Drawable> toDraw = new ArrayList<>();
 
     public void draw(List<Drawable> toDraw) {
     	Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
