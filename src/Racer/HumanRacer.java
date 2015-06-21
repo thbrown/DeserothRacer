@@ -18,31 +18,16 @@ public class HumanRacer extends Racer {
 		this.setxVelocity(0.0f);
 		this.setyVelocity(0.0f);
 		this.loadRacerImage(imageLocation);
+		this.setTurningRadius(100.0f);
+		this.setDrag(0.05f);
 	}
 	
-	@Override
-	public void setupAccelerationVectors() {
-		float xAcc = 0.0f;
-		float yAcc = 0.0f;
+	private void CalculateBaseAcceleration() {
+		float xAcc = this.getxAcceleration();
+		float yAcc = this.getyAcceleration();
 		float direction = this.getDirection();
-		if ( leftPressed ) {
-			//TODO: Add turning adjustments to the Acceleration Vector.
-			direction -= 0.1f;
-		}
-		if ( rightPressed ) {
-			//TODO: Add turning adjustments to the Acceleration Vector.
-			direction += 0.1f;
-		}
-		/*if ( slightRightPressed ) {
-			//TODO: Add turning adjustments to the Acceleration Vector.
-			direction += 0.05f;
-		}
-		if ( slightLeftPressed ) {
-			//TODO: Add turning adjustments to the Acceleration Vector.
-			direction -= 0.05f;
-		}*/
-		if ( upPressed )
-		{
+		
+		if ( upPressed ) {
 			xAcc = (float)Math.cos(direction) * this.MAX_ACCELERATION * this.getStateSpeedEffect();
 			yAcc = (float)Math.sin(direction) * this.MAX_ACCELERATION * this.getStateSpeedEffect();
 		}
@@ -51,32 +36,132 @@ public class HumanRacer extends Racer {
 			yAcc = (float)Math.sin(direction) * this.MAX_DECELERATION * this.getStateSpeedEffect();
 		}
 		if ( !upPressed && !downPressed ) {
-			if( xAcc > 0 )
+			xAcc = 0.0f;
+			yAcc = 0.0f;
+			/*if( this.getxVelocity() > 0 )
 			{
-				xAcc -= (float)Math.cos(direction) * 0.1f;
+				xAcc = -0.1f;
 			}
-			else if (yAcc < 0 )
+			else if (this.getxVelocity() < 0 )
 			{
-				xAcc += (float)Math.cos(direction) * 0.1f;
+				xAcc = 0.1f;
 			}
-			if( yAcc > 0 )
+			if( this.getyVelocity() > 0 )
 			{
-				//TODO: Need to add some slow down
-				yAcc -= (float)Math.sin(direction) * 0.1f;
+				yAcc = -0.1f;
 			}
-			else if ( yAcc < 0 )
+			else if ( this.getyVelocity() < 0 )
 			{
-				yAcc += (float)Math.sin(direction) * 0.1f;
-			}
+				yAcc = 0.1f;
+			}*/
 		}
-		this.setDirection(direction);
 		this.setxAcceleration(xAcc);
 		this.setyAcceleration(yAcc);
+	}
+	
+	private void CalculateAndSetNewDirection() {
+		float direction = this.getDirection();
+		if ( leftPressed ) {
+			direction -= 0.1f;
+		}
+		if ( rightPressed ) {
+			direction += 0.1f;
+		}
+		this.setDirection(direction);
+	}
+	
+	private void ModifyAccelerationVectorsForTurning() {
+		float xAcc = this.getxAcceleration();
+		float yAcc = this.getyAcceleration();
+		float direction = this.getDirection();
+		
+		float turningAccelerationMagnitude = ( this.getxVelocity() * this.getxVelocity() + this.getyVelocity() * this.getyVelocity() ) / this.getTurningRadius();
+		
+		System.out.println("Turning Acceleration: " + turningAccelerationMagnitude);
+		
+		if ( leftPressed ) {
+			xAcc = (float) (turningAccelerationMagnitude * Math.cos(direction - Math.PI/4));
+			yAcc = (float) (turningAccelerationMagnitude * Math.sin(direction - Math.PI/4));
+		}
+		if ( rightPressed ) {
+			xAcc = (float) (turningAccelerationMagnitude * Math.cos(direction + Math.PI/4));
+			yAcc = (float) (turningAccelerationMagnitude * Math.sin(direction + Math.PI/4));
+		}
+		
+		System.out.println("After recal: " + Math.sqrt(xAcc*xAcc + yAcc*yAcc));
+		
+		this.setxAcceleration(xAcc);
+		this.setyAcceleration(yAcc);
+	}
+	
+	@Override
+	public void setupAccelerationVectors() {
+		
+		CalculateAndSetNewDirection();
+		
+		CalculateBaseAcceleration();
+		
+		ModifyAccelerationVectorsForTurning();
+		
+		/*if ( slightRightPressed ) {
+			//TODO: Add turning adjustments to the Acceleration Vector.
+			direction += 0.05f;
+		}
+		if ( slightLeftPressed ) {
+			//TODO: Add turning adjustments to the Acceleration Vector.
+			direction -= 0.05f;
+		}*/
+		/*if ( upPressed )
+		{
+			xAcc = (float)Math.cos(direction) * this.MAX_ACCELERATION * this.getStateSpeedEffect() - this.getDrag() * this.getxVelocity() * (float)Math.cos(direction);
+			yAcc = (float)Math.sin(direction) * this.MAX_ACCELERATION * this.getStateSpeedEffect() - this.getDrag() * this.getyVelocity() * (float)Math.sin(direction);
+		}
+		if ( downPressed ) {
+			xAcc = (float)Math.cos(direction) * this.MAX_DECELERATION * this.getStateSpeedEffect() + this.getDrag() * this.getxVelocity() * (float)Math.cos(direction);
+			yAcc = (float)Math.sin(direction) * this.MAX_DECELERATION * this.getStateSpeedEffect() + this.getDrag() * this.getyVelocity() * (float)Math.sin(direction);
+		}
+		if ( !upPressed && !downPressed ) {
+			xAcc = 0.0f;
+			yAcc = 0.0f;
+			if( this.getxVelocity() > 0 )
+			{
+				xAcc = -0.1f;
+			}
+			else if (this.getxVelocity() < 0 )
+			{
+				xAcc = 0.1f;
+			}
+			if( this.getyVelocity() > 0 )
+			{
+				//TODO: Need to add some slow down
+				yAcc = -0.1f;
+			}
+			else if ( this.getyVelocity() < 0 )
+			{
+				yAcc = 0.1f;
+			}
+		}*/
+		
+		/*float turningAccelerationMagnitude = this.getxVelocity() * this.getxVelocity() + this.getyVelocity() * this.getyVelocity() / this.getTurningRadius();
+		if ( leftPressed ) {
+			xAcc -= turningAccelerationMagnitude * Math.cos(direction + Math.PI/4);
+			yAcc -= turningAccelerationMagnitude * Math.sin(direction + Math.PI/4);
+		}
+		if ( rightPressed ) {
+			xAcc += turningAccelerationMagnitude * Math.cos(direction + Math.PI/4);
+			yAcc += turningAccelerationMagnitude * Math.sin(direction + Math.PI/4);
+		}
+		
+		System.out.println("xAcc: " + xAcc);
+		System.out.println("yAcc: " + yAcc);
+		
+		this.setDirection(direction);
+		this.setxAcceleration(xAcc);
+		this.setyAcceleration(yAcc);*/
 		
 		//System.out.println(this.getxAcceleration());
 		//System.out.println(this.getyAcceleration());
-	}
-	
+	}	
 
 	public boolean isUpPressed() {
 		return upPressed;

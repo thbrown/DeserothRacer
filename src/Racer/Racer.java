@@ -17,6 +17,7 @@ import javax.imageio.stream.ImageInputStream;
 import javax.swing.ImageIcon;
 
 import Screens.Drawable;
+import Screens.MainFrame;
 
 
 public abstract class Racer implements Drawable{
@@ -27,10 +28,12 @@ public abstract class Racer implements Drawable{
 	private float direction; //In radians
 	private RacerState state;
 	private BufferedImage racerImage;
+	private float turningRadius;
+	private float drag;
 	
 	static final float MAX_ACCELERATION = 4.0f;
 	static final float MAX_DECELERATION = -4.0f;
-	static final float MAX_VELOCITY = 20.0f;
+	static final float MAX_VELOCITY = 40.0f;
 	
 	public void loadRacerImage( String racerImageLocation ) {
 	    Image  img = new ImageIcon(racerImageLocation).getImage();
@@ -64,6 +67,19 @@ public abstract class Racer implements Drawable{
 	public void CalculatePosition() {
 		this.xPosition += this.xVelocity;
 		this.yPosition += this.yVelocity;
+		
+		if ( this.xPosition < 0 ) {
+			this.xPosition = MainFrame.width - this.xPosition;
+		}
+		if ( this.xPosition > MainFrame.width ) {
+			this.xPosition = this.xPosition - MainFrame.width;
+		}
+		if ( this.yPosition < 0 ) {
+			this.yPosition = MainFrame.height - this.yPosition;
+		}
+		if ( this.yPosition > MainFrame.height ) {
+			this.yPosition = this.yPosition - MainFrame.height;
+		}
 
 		//System.out.println(this.xPosition);
 		//System.out.println(this.yPosition);
@@ -173,6 +189,22 @@ public abstract class Racer implements Drawable{
 		g2.drawImage(op.filter(racerImage, null), (int)this.xPosition, (int)this.yPosition, null);
 		
 		//g2.drawImage(racerImage, (int)this.xPosition, (int)this.yPosition, null);
+	}
+
+	public float getTurningRadius() {
+		return turningRadius;
+	}
+
+	public void setTurningRadius(float turningRadius) {
+		this.turningRadius = turningRadius;
+	}
+
+	public float getDrag() {
+		return drag;
+	}
+
+	public void setDrag(float drag) {
+		this.drag = drag;
 	}
 
 }

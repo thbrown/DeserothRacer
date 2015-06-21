@@ -26,15 +26,7 @@ public class MainFrame extends Canvas {
 		// First we go to the main menu page
 		Page menu = new MainMenu(frame);
 		Page nextPage = menu.executePage();
-		
-		//Page race = new Race(frame);
-		//Page nextPage = race.executePage();
-		
-		frame.setFocusable(true);
-		//KeyListener kl = (KeyListener) race;
-		//frame.addKeyListener(race);
-		//Page nextPage = ((Page) race).executePage();
-		
+		frame.setFocusable(true);		
 		
 		// Then we keep going to whatever page comes next until we get a null
 		while(nextPage != null) {
