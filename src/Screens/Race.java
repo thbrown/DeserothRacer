@@ -8,16 +8,16 @@ import Racer.*;
 
 public class Race implements KeyListener, Page {
 	
-	MainFrame displayer = new MainFrame();
+	MainFrame displayer;
 	public List<Racer> racers = new ArrayList<Racer>();
 	
 	public Race(MainFrame displayer) {
-		this.displayer = new MainFrame();
+		this.displayer = displayer;
 		this.displayer.addKeyListener(this);
 	}
 	
 	private void init( ) {
-		racers.add(new HumanRacer(0, "C:/Users/Boys/Documents/GitHub/DeserothRacer/src/Images/RaceCar.jpg"));
+		racers.add(new HumanRacer(0, "src/Images/RaceCar.jpg"));
 	}
 	
 	private void calculateRacerStuffs() {
