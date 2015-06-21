@@ -47,13 +47,15 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 			BACKGROUND_MOUNTAIN_IMAGE = ImageIO.read(new File("src/Images/mainMenuBackgroundMountains.png"));
 			BACKGROUND_TREE_IMAGE = ImageIO.read(new File("src/Images/mainMenuBackgroundTrees.png"));
 		} catch (IOException e) {
-			System.out.println("Error: COuld not find image file.");
+			System.out.println("Error: Could not find image file.");
 			e.printStackTrace();
 		}
 	}
 
 	public MainMenu(MainFrame mainframe) {
 		this.mainframe = mainframe;
+		mainframe.addMouseListener(this);
+		mainframe.addMouseMotionListener(this);
 	}
 
 	public Page executePage() {
@@ -71,8 +73,8 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 		menuElements.add(new Car(CAR_IMAGE, 500, 440, 100, 100));
 		menuElements.add(new MenuElement("Deseroth Racer", TITLE_TEXT_X_OFFSET, TITLE_TEXT_Y_OFFSET, TITLE_TEXT_SIZE, false, null));
 		menuElements.add(new MenuElement("Play", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*1, MENU_TEXT_SIZE, true, new Race(mainframe)));
-		menuElements.add(new MenuElement("Options", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*2, MENU_TEXT_SIZE, true, null));
-		menuElements.add(new MenuElement("Credits", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*3, MENU_TEXT_SIZE, true, null));
+		menuElements.add(new MenuElement("Options", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*2, MENU_TEXT_SIZE, true, new Options(mainframe)));
+		menuElements.add(new MenuElement("Credits", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*3, MENU_TEXT_SIZE, true, new Credits(mainframe)));
 		menuElements.add(new MenuElement("Quit", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*4, MENU_TEXT_SIZE, true, null));
 		menuElements.add(new MousePointer());
 	}
@@ -118,7 +120,9 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 			
 			// Should we go to the next page???
 			if(nextPage != null) {
-				return nextPage;
+				Page toReturn = nextPage;
+				nextPage = null;
+				return toReturn;
 			}
 
 			// Sleep for some amount of time
@@ -336,7 +340,7 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 		
 	}
 	
-	// This is just a dot that follows the mouse pointer. It is used to detect a mouse collision with a menu element
+	// This is just a dot that follows the mouse pointer. It is used to detect a mouse collision with a menu element.
 	class MousePointer implements Entity {
 		
 		int x;
@@ -376,7 +380,7 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// meh
+		// Meh
 	}
 
 	@Override

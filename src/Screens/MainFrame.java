@@ -5,6 +5,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
@@ -25,8 +26,6 @@ public class MainFrame extends Canvas {
 		
 		// First we go to the main menu page
 		Page menu = new MainMenu(frame);
-		frame.addMouseListener((MouseListener) menu);
-		frame.addMouseMotionListener((MouseMotionListener) menu);
 		Page nextPage = menu.executePage();
 		
 		//Page race = new Race(frame);
@@ -91,7 +90,7 @@ public class MainFrame extends Canvas {
     }
     
     /**
-     * Same as draw, but java but accepts a lit of entities instead of Drawables.
+     * Same as draw, but java but accepts a list of entities instead of Drawables.
      * @param toDraw
      */
     public void drawEntities(List<Entity> toDraw) {
@@ -107,5 +106,25 @@ public class MainFrame extends Canvas {
 		
     	g.dispose();
     	strategy.show();
+    }
+    
+    /**
+     * Removes all mouseListeners, mouseMotionListeners, and keyListeners from this component. Feel free to expand this.
+     */
+    public void removeListeners() {
+    	MouseListener[] mls = this.getMouseListeners();
+    	for(MouseListener ml : mls) {
+    		this.removeMouseListener(ml);
+    	}
+    	
+    	MouseMotionListener[] mmls = this.getMouseMotionListeners();
+    	for(MouseMotionListener mml : mmls) {
+    		this.removeMouseMotionListener(mml);
+    	}
+    	
+    	KeyListener[] kls = this.getKeyListeners();
+    	for(KeyListener kl : kls) {
+    		this.removeKeyListener(kl);
+    	}
     }
 }
