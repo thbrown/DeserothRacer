@@ -27,29 +27,49 @@ public class HumanRacer extends Racer {
 		float direction = this.getDirection();
 		if ( leftPressed ) {
 			//TODO: Add turning adjustments to the Acceleration Vector.
-			direction += 0.1f;
+			direction -= 0.1f;
 		}
 		if ( rightPressed ) {
 			//TODO: Add turning adjustments to the Acceleration Vector.
-			direction -= 0.1f;
+			direction += 0.1f;
 		}
 		/*if ( slightRightPressed ) {
 			//TODO: Add turning adjustments to the Acceleration Vector.
-			direction -= 0.05f;
+			direction += 0.05f;
 		}
 		if ( slightLeftPressed ) {
 			//TODO: Add turning adjustments to the Acceleration Vector.
-			direction += 0.05f;
+			direction -= 0.05f;
 		}*/
 		if ( upPressed )
 		{
-			xAcc += (float)Math.cos(direction) * this.MAX_ACCELERATION * this.getStateSpeedEffect();
-			yAcc += (float)Math.sin(direction) * this.MAX_ACCELERATION * this.getStateSpeedEffect();
+			xAcc = (float)Math.cos(direction) * this.MAX_ACCELERATION * this.getStateSpeedEffect();
+			yAcc = (float)Math.sin(direction) * this.MAX_ACCELERATION * this.getStateSpeedEffect();
 		}
 		if ( downPressed ) {
-			xAcc += (float)Math.cos(direction) * this.MAX_DECELERATION * this.getStateSpeedEffect();
-			yAcc += (float)Math.sin(direction) * this.MAX_DECELERATION * this.getStateSpeedEffect();
+			xAcc = (float)Math.cos(direction) * this.MAX_DECELERATION * this.getStateSpeedEffect();
+			yAcc = (float)Math.sin(direction) * this.MAX_DECELERATION * this.getStateSpeedEffect();
 		}
+		if ( !upPressed && !downPressed ) {
+			if( xAcc > 0 )
+			{
+				xAcc -= (float)Math.cos(direction) * 0.1f;
+			}
+			else if (yAcc < 0 )
+			{
+				xAcc += (float)Math.cos(direction) * 0.1f;
+			}
+			if( yAcc > 0 )
+			{
+				//TODO: Need to add some slow down
+				yAcc -= (float)Math.sin(direction) * 0.1f;
+			}
+			else if ( yAcc < 0 )
+			{
+				yAcc += (float)Math.sin(direction) * 0.1f;
+			}
+		}
+		this.setDirection(direction);
 		this.setxAcceleration(xAcc);
 		this.setyAcceleration(yAcc);
 		

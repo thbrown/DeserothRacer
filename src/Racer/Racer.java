@@ -2,14 +2,14 @@ package Racer;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-
-import javafx.scene.transform.Rotate;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -158,9 +158,21 @@ public abstract class Racer implements Drawable{
 	}
 	
 	public void draw(Graphics g) {
-		Graphics2D g2 = racerImage.createGraphics();
-		g2.rotate(this.getDirection(),racerImage.getWidth()/2, racerImage.getHeight()/2);
-		g.drawImage(racerImage, (int)this.xPosition, (int)this.yPosition, null);
+
+		Graphics2D g2 = (Graphics2D)g;//racerImage.createGraphics();
+		
+		double locationX = racerImage.getWidth() / 2;
+		double locationY = racerImage.getHeight() / 2;
+		AffineTransform tx = AffineTransform.getRotateInstance(this.direction, locationX, locationY);
+		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+
+		// Drawing the rotated image at the required drawing locations
+		//g2d.drawImage(op.filter(image, null), drawLocationX, drawLocationY, null);
+		
+		//g2.rotate(this.getDirection(),racerImage.getWidth()/2, racerImage.getHeight()/2);
+		g2.drawImage(op.filter(racerImage, null), (int)this.xPosition, (int)this.yPosition, null);
+		
+		//g2.drawImage(racerImage, (int)this.xPosition, (int)this.yPosition, null);
 	}
 
 }

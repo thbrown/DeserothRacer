@@ -70,21 +70,27 @@ public class Race implements KeyListener, Page {
 		for (Racer racer : racers) {
 			if(racer.getClass() == HumanRacer.class) {
 				if ( e.getKeyChar() == 'w' || e.getKeyChar() == 'W' ) {
+					System.out.println("W pressed.");
 					((HumanRacer) racer).setUpPressed(true);
 				}
 				if ( e.getKeyChar() == 's' || e.getKeyChar() == 'S' ) {
+					System.out.println("S pressed.");
 					((HumanRacer) racer).setDownPressed(true);
 				}
 				if ( e.getKeyChar() == 'a' || e.getKeyChar() == 'A' ) {
+					System.out.println("A pressed.");
 					((HumanRacer) racer).setLeftPressed(true);
 				}
 				if ( e.getKeyChar() == 'd' || e.getKeyChar() == 'D' ) {
+					System.out.println("D pressed.");
 					((HumanRacer) racer).setRightPressed(true);
 				}
 				if ( e.getKeyChar() == 'q' || e.getKeyChar() == 'Q' ) {
+					System.out.println("Q pressed.");
 					((HumanRacer) racer).setSlightLeftPressed(true);
 				}
 				if ( e.getKeyChar() == 'e' || e.getKeyChar() == 'E' ) {
+					System.out.println("E pressed.");
 					((HumanRacer) racer).setSlightRightPressed(true);
 				}
 			}
@@ -96,21 +102,27 @@ public class Race implements KeyListener, Page {
 		for (Racer racer : racers) {
 			if(racer.getClass() == HumanRacer.class) {
 				if ( e.getKeyChar() == 'w' || e.getKeyChar() == 'W' ) {
+					System.out.println("W released.");
 					((HumanRacer) racer).setUpPressed(false);
 				}
-				if ( e.getKeyChar() == 'a' || e.getKeyChar() == 'A' ) {
+				if ( e.getKeyChar() == 's' || e.getKeyChar() == 'S' ) {
+					System.out.println("S released.");
 					((HumanRacer) racer).setDownPressed(false);
 				}
-				if ( e.getKeyChar() == 's' || e.getKeyChar() == 'S' ) {
+				if ( e.getKeyChar() == 'a' || e.getKeyChar() == 'A' ) {
+					System.out.println("A released.");
 					((HumanRacer) racer).setLeftPressed(false);
 				}
 				if ( e.getKeyChar() == 'd' || e.getKeyChar() == 'D' ) {
+					System.out.println("D released.");
 					((HumanRacer) racer).setRightPressed(false);
 				}
 				if ( e.getKeyChar() == 'q' || e.getKeyChar() == 'Q' ) {
+					System.out.println("Q released.");
 					((HumanRacer) racer).setSlightLeftPressed(false);
 				}
 				if ( e.getKeyChar() == 'e' || e.getKeyChar() == 'E' ) {
+					System.out.println("E released.");
 					((HumanRacer) racer).setSlightRightPressed(false);
 				}
 			}
