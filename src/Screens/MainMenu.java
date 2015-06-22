@@ -7,6 +7,8 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -30,22 +32,25 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 	private static BufferedImage CAR_IMAGE;
 	private static BufferedImage BACKGROUND_MOUNTAIN_IMAGE;
 	private static BufferedImage BACKGROUND_TREE_IMAGE;
-	
+	private static BufferedImage WHEEL_IMAGE;
+
 	private int mouseX = 0;
 	private int mouseY = 0;
 	private boolean click = false;
 
 	MainFrame mainframe;
 	List<Entity> menuElements;
-	
+
 	static Page nextPage = null; // Making this static for now to get the menu working. Should move this to an instance variable.
-	
+
 	// We'll load the pictures once here, so we don't have to re-load them each time we create an object
+	// TODO: move these inte their respective classes
 	static {
 		try {
 			CAR_IMAGE = ImageIO.read(new File("src/Images/car.png"));
 			BACKGROUND_MOUNTAIN_IMAGE = ImageIO.read(new File("src/Images/mainMenuBackgroundMountains.png"));
 			BACKGROUND_TREE_IMAGE = ImageIO.read(new File("src/Images/mainMenuBackgroundTrees.png"));
+			WHEEL_IMAGE = ImageIO.read(new File("src/Images/wheel.png"));
 		} catch (IOException e) {
 			System.out.println("Error: Could not find image file.");
 			e.printStackTrace();
@@ -71,6 +76,8 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 		menuElements.add(new ScrollingImage(BACKGROUND_TREE_IMAGE, -20, 0));
 		menuElements.add(new ScrollingImage(BACKGROUND_TREE_IMAGE, -20, -BACKGROUND_TREE_IMAGE.getWidth()));
 		menuElements.add(new Car(CAR_IMAGE, 500, 440, 100, 100));
+		menuElements.add(new Wheel(550,605));
+		menuElements.add(new Wheel(995,605));
 		menuElements.add(new MenuElement("Deseroth Racer", TITLE_TEXT_X_OFFSET, TITLE_TEXT_Y_OFFSET, TITLE_TEXT_SIZE, false, null));
 		menuElements.add(new MenuElement("Play", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*1, MENU_TEXT_SIZE, true, new Race(mainframe)));
 		menuElements.add(new MenuElement("Options", MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET+MENU_TEXT_SPACING*2, MENU_TEXT_SIZE, true, new Options(mainframe)));
@@ -82,7 +89,7 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 	private Page loop() {
 		while(true) {
 			long time = System.nanoTime();
-			
+
 			// Check Collisions (brute force) and update
 			for (Entity a : menuElements) {
 				Rectangle aRect = a.getRectangle();
@@ -99,25 +106,25 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 					if(bRect == null) {
 						continue; // For some entities we don't care about collisions
 					}
-					
+
 					if (aRect.intersects(bRect)) {
 						thingsCollidingWithA.add(b);
 					}
 				}
-				
+
 				// Now that we know everything that is colliding with this entity, we'll have the entity update itself
 				a.update(thingsCollidingWithA);
 			}
-			
+
 			// Add/Remove any Entities from the Page (We do this here to avoid concurrent modification Exceptions).
 			menuElements.removeAll(toRemove);
 			toRemove.clear();
 			menuElements.addAll(toAdd);
 			toAdd.clear();
-			
+
 			// Draw all the things
 			mainframe.drawEntities(menuElements);
-			
+
 			// Should we go to the next page???
 			if(nextPage != null) {
 				Page toReturn = nextPage;
@@ -250,7 +257,7 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 			return null; // We don't want to waste compute power calculating collisions for these particals
 			//return new Rectangle(x,y,img.getWidth(),img.getHeight());
 		}
-		
+
 	}
 
 	class ScrollingImage implements Entity {
@@ -266,7 +273,7 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 			this.x = startingX;
 			this.speed = speed;
 		}
-		
+
 		ScrollingImage(BufferedImage image, int speed, int startingX) {
 			img = image;
 			this.x = startingX;
@@ -293,9 +300,9 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 			return new Rectangle(x,y,img.getWidth(),img.getHeight());
 		}
 	}
-	
+
 	class PieceOfDust implements Entity {
-		
+
 		int x;
 		int y;
 		double xVel = 20 + ((3-Math.random()*4));
@@ -305,7 +312,7 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 		int translucency = 255;
 		Color c = new Color(139,69,19,translucency);
 		int SIZE = (int) (Math.random()*10);
-		
+
 		PieceOfDust(int x, int y) {
 			this.x = x;
 			this.y = y;
@@ -337,15 +344,47 @@ public class MainMenu implements Page, MouseMotionListener, MouseListener {
 		public Rectangle getRectangle() {
 			return new Rectangle(x,y,SIZE,SIZE);
 		}
-		
+
 	}
-	
-	// This is just a dot that follows the mouse pointer. It is used to detect a mouse collision with a menu element.
-	class MousePointer implements Entity {
-		
+
+	class Wheel implements Entity {
+
 		int x;
 		int y;
-		
+		double angle = 0; // rad
+		double rotationalVelocity = Math.toRadians(-35); // rad
+		BufferedImage img = MainMenu.WHEEL_IMAGE;
+
+		Wheel(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public void draw(Graphics g) {
+			AffineTransform tx = AffineTransform.getRotateInstance(angle, Math.ceil(img.getHeight()/2), Math.ceil(img.getWidth()/2));
+			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+			g.drawImage(op.filter(img, null), x, y, null);
+		}
+
+		@Override
+		public void update(List<Screens.Entity> collisions) {
+			angle = (angle + rotationalVelocity); // The growth of angle is unbounded here... probably is not an issue
+		}
+
+		@Override
+		public Rectangle getRectangle() {
+			return new Rectangle(x,y,img.getHeight(), img.getWidth());
+		}
+
+	}
+
+	// This is just a dot that follows the mouse pointer. It is used to detect a mouse collision with a menu element.
+	class MousePointer implements Entity {
+
+		int x;
+		int y;
+
 		private final int SIZE = 2;
 
 		@Override

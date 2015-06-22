@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import Racer.Racer;
-import Screens.Credits.TextElement;
 
 public class RaceResults implements Page, MouseMotionListener, MouseListener {
 
